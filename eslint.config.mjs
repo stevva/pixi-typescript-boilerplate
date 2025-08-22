@@ -107,5 +107,9 @@ export default tseslint.config(
             },
         },
         rules: commonRules,
+        include: [
+            "src/**/*",
+            // your current include patterns
+        ],
     },
 );

@@ -1,6 +1,6 @@
 import { AnimatedSprite, Texture } from "pixi.js";
 
-export function createBird(): AnimatedSprite {
+export function getAnimatedSprite(): AnimatedSprite {
     const bird = new AnimatedSprite([
         Texture.from("birdUp.png"),
         Texture.from("birdMiddle.png"),
