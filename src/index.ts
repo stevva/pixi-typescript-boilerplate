@@ -1,9 +1,7 @@
 import { Application, Assets, AssetsManifest } from "pixi.js";
 import "@esotericsoftware/spine-pixi-v8";
 import "./style.css";
-import { getSpine } from "./utils/spine-example";
-import { get3dSymbol } from "./utils/symbol-example";
-import { getAnimatedSprite } from "./utils/animated-sprite-example";
+import { getSprite } from "./utils/sprite-example";
 
 declare global {
     // eslint-disable-next-line no-var
@@ -38,56 +36,47 @@ console.log(
     async function loadGameAssets(): Promise<void> {
         const manifest = {
             bundles: [
-                {
-                    name: "animated-sprites",
-                    assets: [{ alias: "bird", src: "./assets/animated-sprite/simpleSpriteSheet.json" }],
-                },
-                {
-                    name: "spines",
-                    assets: [
-                        { alias: "spineboyData", src: "./assets/spines/spineboy/spineboy-pro.skel" },
-                        { alias: "spineboyAtlas", src: "./assets/spines/spineboy/spineboy-pma.atlas" },
-                        { alias: "symbolData", src: "./assets/spines/symbols/skeleton.json" },
-                        { alias: "symbolAtlas", src: "./assets/spines/symbols/3x3_v3.atlas" },
-                    ],
-                },
+                // {
+                //     name: "animated-sprites",
+                //     assets: [{ alias: "bird", src: "./assets/animated-sprite/simpleSpriteSheet.json" }],
+                // },
+                // {
+                //     name: "spines",
+                //     assets: [
+                //         { alias: "spineboyData", src: "./assets/spines/spineboy/spineboy-pro.skel" },
+                //         { alias: "spineboyAtlas", src: "./assets/spines/spineboy/spineboy-pma.atlas" },
+                //     ],
+                // },
                 {
                     name: "images",
                     assets: [
                         { alias: "H01", src: "./assets/images/H01.png" },
                         { alias: "H02", src: "./assets/images/H02.png" },
+                        { alias: "H03", src: "./assets/images/H03.png" },
                         { alias: "M01", src: "./assets/images/M01.png" },
                         { alias: "M02", src: "./assets/images/M02.png" },
+                        { alias: "M03", src: "./assets/images/M03.png" },
                         { alias: "L01", src: "./assets/images/L01.png" },
                         { alias: "L02", src: "./assets/images/L02.png" },
+                        { alias: "L03", src: "./assets/images/L03.png" },
+                        { alias: "L04", src: "./assets/images/L04.png" },
                     ],
                 },
             ],
         } satisfies AssetsManifest;
 
         await Assets.init({ manifest });
-        await Assets.loadBundle(["animated-sprites", "spines", "images"]);
+        await Assets.loadBundle(["images"]);
 
         document.body.appendChild(app.canvas);
 
         resizeCanvas();
 
-        const birdFromSprite = getAnimatedSprite();
+        const sprite = await getSprite("H01");
+        sprite.anchor.set(0.5, 0.5);
+        sprite.position.set(gameWidth / 2, gameHeight / 2);
 
-        birdFromSprite.anchor.set(0.5, 0.5);
-        birdFromSprite.position.set(gameWidth / 2, gameHeight / 4);
-
-        const spineExample = await getSpine();
-
-        spineExample.position.set(gameWidth / 2, gameHeight / 2 + spineExample.getBounds().height);
-
-        const symbolExample = await get3dSymbol();
-
-        symbolExample.position.set(gameWidth / 2, gameHeight / 2 + symbolExample.getBounds().height);
-
-        app.stage.addChild(birdFromSprite);
-        // app.stage.addChild(spineExample);
-        app.stage.addChild(symbolExample);
+        app.stage.addChild(sprite);
     }
 
     function resizeCanvas(): void {
