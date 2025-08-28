@@ -23,7 +23,9 @@
     "license": "MIT",
     "dependencies": {
         "@esotericsoftware/spine-pixi-v8": "^4.2.76",
+        "@tweenjs/tween.js": "^25.0.0",
         "core-js": "^3.41.0",
+        "gsap": "^3.13.0",
         "pixi.js": "^8.9.1"
     },
     "devDependencies": {
