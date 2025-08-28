@@ -36,17 +36,6 @@ console.log(
     async function loadGameAssets(): Promise<void> {
         const manifest = {
             bundles: [
-                // {
-                //     name: "animated-sprites",
-                //     assets: [{ alias: "bird", src: "./assets/animated-sprite/simpleSpriteSheet.json" }],
-                // },
-                // {
-                //     name: "spines",
-                //     assets: [
-                //         { alias: "spineboyData", src: "./assets/spines/spineboy/spineboy-pro.skel" },
-                //         { alias: "spineboyAtlas", src: "./assets/spines/spineboy/spineboy-pma.atlas" },
-                //     ],
-                // },
                 {
                     name: "images",
                     assets: [
@@ -82,18 +71,8 @@ console.log(
     function resizeCanvas(): void {
         const resize = () => {
             app.renderer.resize(window.innerWidth, window.innerHeight);
-
-            // Resize: Maintain aspect ratio
-            {
-                const scale = Math.min(window.innerWidth / gameWidth, window.innerHeight / gameHeight);
-
-                app.stage.scale.set(scale);
-                app.stage.x = (window.innerWidth - gameWidth * scale) / 2;
-                app.stage.y = (window.innerHeight - gameHeight * scale) / 2;
-            }
-            // Alternative resize: Stretch to fit
-            // app.stage.scale.x = window.innerWidth / gameWidth;
-            // app.stage.scale.y = window.innerHeight / gameHeight;
+            app.stage.scale.x = window.innerWidth / gameWidth;
+            app.stage.scale.y = window.innerHeight / gameHeight;
         };
 
         resize();
