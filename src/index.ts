@@ -2,6 +2,7 @@ import { Application, Assets, AssetsManifest } from "pixi.js";
 import "@esotericsoftware/spine-pixi-v8";
 import "./style.css";
 import { getSprite } from "./utils/sprite-example";
+import { Group } from "@tweenjs/tween.js";
 
 declare global {
     // eslint-disable-next-line no-var
@@ -30,6 +31,12 @@ console.log(
     });
 
     await app.init({ backgroundColor: 0xd3d3d3, width: gameWidth, height: gameHeight });
+
+    const group = new Group();
+
+    app.ticker.add((delta) => {
+        group.update(); // updates all tweens in this group
+    });
 
     await loadGameAssets();
 
