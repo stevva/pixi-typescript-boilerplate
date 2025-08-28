@@ -1,8 +1,9 @@
-import { Application, Assets, AssetsManifest } from "pixi.js";
+import { Application, Assets, AssetsManifest, Container, ContainerChild, Text } from "pixi.js";
 import "@esotericsoftware/spine-pixi-v8";
 import "./style.css";
 import { getSprite } from "./utils/sprite-example";
 import { Group } from "@tweenjs/tween.js";
+import gsap from "gsap";
 
 declare global {
     // eslint-disable-next-line no-var
@@ -68,18 +69,87 @@ console.log(
 
         resizeCanvas();
 
-        const sprite = await getSprite("H01");
-        sprite.anchor.set(0.5, 0.5);
-        sprite.position.set(gameWidth / 2, gameHeight / 2);
+        const grid = new Container();
 
-        app.stage.addChild(sprite);
+        let rows = 3;
+        let columns = 4;
+        const textures = ["H01", "H02", "H03", "M01", "M02", "M03", "L01", "L02", "L03", "L04"];
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+                const randomIndex = 0//Math.floor((Math.random() * 10) % textures.length)
+                const texture = textures[randomIndex]
+                const cell = await getSprite(texture);
+                cell.label = texture;
+                cell.width = 200;
+                cell.height = 250;
+                cell.anchor.set(0.5);
+
+                const startX = -200;
+                const startY = -250;
+                const x = startX + j * 200;
+                const y = startY + i * 250;
+                cell.position.set(x, y);
+                grid.addChild(cell);
+            }
+        }
+
+        grid.position.set(gameWidth / 2, gameHeight / 2);
+        grid.setSize(200 * 4, 250 * 3)
+        grid.pivot.set(100, 0)
+
+        app.stage.addChild(grid);
+
+        gsap.to(grid, {
+            scale: 0.8,
+            delay: 2,
+            ease: "power1.inOut",
+            onComplete: () => {
+                checkWin(grid, columns, rows);
+            }
+        });
+
+        const checkWin = (grid: Container<ContainerChild>, columns: number, rows: number) => {
+            let arr = [];
+            for (let i = 0; i < columns; i++)
+                arr.push(grid.children[i]);
+            if (arr[0].label === arr[1].label && arr[0].label === arr[2].label && arr[1].label === arr[2].label)
+                win(arr[0], arr[1], arr[2])
+            else
+                lose(grid, rows, columns)
+        }
+
+        const win = (sym1: ContainerChild, sym2: ContainerChild, sym3: ContainerChild) => {
+            gsap.to([sym1, sym2, sym3], {
+                scale: 1.2,
+                alpha: 0.8,
+                delay: 1,
+                duration: 2000,
+                yoyo: true,
+            });
+        }
+
+        const lose = (grid: Container<ContainerChild>, rows: number, columns: number) => {
+            alert("lose")
+            const topLeftSym = grid.getChildAt(0);
+            const bottomRightSym = grid.getChildAt(rows * columns - 1)
+            // gsap.to(topLeftSym, {
+            //     x: bottomRightSym.x,
+            //     y: bottomRightSym.y,
+            //     duration: 1000,
+            // });
+        }
     }
 
     function resizeCanvas(): void {
         const resize = () => {
             app.renderer.resize(window.innerWidth, window.innerHeight);
-            app.stage.scale.x = window.innerWidth / gameWidth;
-            app.stage.scale.y = window.innerHeight / gameHeight;
+            if (window.innerWidth > window.innerHeight) {
+                app.stage.scale.x = window.innerWidth / gameWidth;
+                app.stage.scale.y = app.stage.scale.x;
+            } else {
+                app.stage.scale.x = window.innerWidth / gameWidth;
+                app.stage.scale.y = app.stage.scale.x;
+            }
         };
 
         resize();
